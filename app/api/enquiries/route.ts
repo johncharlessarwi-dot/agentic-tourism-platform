@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { enquirySchema, normalizeDestination } from "@/lib/tourism";
+import { enquirySchema, normalizeDestination } from "../../../lib/tourism";
 
 export async function POST(request: Request) {
   let payload: unknown;
