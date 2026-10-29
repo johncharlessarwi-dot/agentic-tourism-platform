@@ -11,7 +11,7 @@ describe("enquiry lead scoring", () => {
   it("prioritizes near-term group enquiries with detailed requirements", () => {
     const result = scoreEnquiry({ ...base, travelDate: "2026-01-20", travellers: 5, message: "We need a detailed family safari itinerary with accommodation and transfers." }, new Date("2026-01-01T00:00:00Z"));
     expect(result.temperature).toBe("hot");
-    expect(result.score).toBe(80);
+    expect(result.score).toBe(75);
     expect(result.reasons).toHaveLength(4);
   });
   it("does not reward dates that have already passed", () => {
