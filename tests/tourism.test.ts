@@ -14,6 +14,6 @@ describe("tourism domain", () => {
 
   it("normalizes repeated spaces, tabs, and newlines in destinations", () => {
     expect(normalizeDestination("  Lake   Manyara  ")).toBe("Lake Manyara");
-    expect(normalizeDestination("\\tLake\\nManyara  ")).toBe("Lake Manyara");
+    expect(normalizeDestination("\tLake\nManyara  ")).toBe("Lake Manyara");
   });
 });
