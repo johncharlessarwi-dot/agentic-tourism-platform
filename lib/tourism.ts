@@ -15,5 +15,5 @@ export const agentDomains = ["growth-seo", "lead-intelligence", "booking-operati
 export type AgentDomain = (typeof agentDomains)[number];
 
 export function normalizeDestination(destination: string): string {
-  return destination.trim().replace(/\\s+/g, " ");
+  return destination.trim().replace(/\s+/g, " ");
 }
