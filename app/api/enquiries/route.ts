@@ -2,10 +2,11 @@ import { NextResponse } from "next/server";
 import { enquirySchema } from "../../../lib/tourism";
 import { scoreEnquiry } from "../../../lib/lead-scoring";
 import { suggestFollowUp } from "../../../lib/follow-up";
+import { readLimitedJson, RequestTooLargeError } from "../../../lib/request-json";
 
 export async function POST(request: Request) {
   let payload: unknown;
-  try { payload = await request.json(); } catch { return NextResponse.json({ error: "Request body must be valid JSON" }, { status: 400 }); }
+  try { payload = await readLimitedJson(request); } catch (error) { return NextResponse.json({ error: error instanceof RequestTooLargeError ? "Request body is too large" : "Request body must be valid JSON" }, { status: error instanceof RequestTooLargeError ? 413 : 400 }); }
   const parsed = enquirySchema.safeParse(payload);
   if (!parsed.success) return NextResponse.json({ error: "Invalid enquiry", issues: parsed.error.issues }, { status: 422 });
   const lead = scoreEnquiry(parsed.data);

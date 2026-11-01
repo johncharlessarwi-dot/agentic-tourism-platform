@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { buildItinerary, summarizeItinerary } from "../../../lib/itinerary";
+import { readLimitedJson, RequestTooLargeError } from "../../../lib/request-json";
 
 const activitySchema = z.object({
   day: z.number().int().min(1).max(30),
@@ -17,7 +18,7 @@ const itinerarySchema = z.object({
 
 export async function POST(request: Request) {
   let payload: unknown;
-  try { payload = await request.json(); } catch { return NextResponse.json({ error: "Request body must be valid JSON" }, { status: 400 }); }
+  try { payload = await readLimitedJson(request); } catch (error) { return NextResponse.json({ error: error instanceof RequestTooLargeError ? "Request body is too large" : "Request body must be valid JSON" }, { status: error instanceof RequestTooLargeError ? 413 : 400 }); }
   const parsed = itinerarySchema.safeParse(payload);
   if (!parsed.success) return NextResponse.json({ error: "Invalid itinerary", issues: parsed.error.issues }, { status: 422 });
   try {
