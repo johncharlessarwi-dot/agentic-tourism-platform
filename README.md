@@ -55,7 +55,7 @@ curl -X POST 'http://localhost:3000/api/itineraries' \
   -d '{"dayCount":1,"activities":[{"day":1,"title":"Morning game drive","startTime":"08:00","endTime":"11:00"}]}'
 ```
 
-The POST endpoints require `Content-Type: application/json`, reject requests larger than 16 KB, and return validation errors rather than committing a booking. See [API and operational limits](docs/operations/enquiry-triage.md).
+The POST endpoints require `Content-Type: application/json`, reject requests larger than 16 KB, and return validation errors rather than committing a booking. See the [full API reference](docs/API.md) and [enquiry triage playbook](docs/operations/enquiry-triage.md).
 
 ## Safety and privacy
 
