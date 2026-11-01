@@ -20,6 +20,10 @@ describe("enquiry analytics", () => {
   it("normalizes destination names and ranks the most requested", () => {
     expect(aggregateEnquiryMetrics(sample).topDestinations[0]).toEqual({ destination: "Serengeti", enquiries: 2 });
   });
+  it("merges differently cased destination names", () => {
+    const result = aggregateEnquiryMetrics([...sample, { destination: "  sErEnGeTi ", travellers: 1, status: "new" }]);
+    expect(result.topDestinations[0]).toEqual({ destination: "Serengeti", enquiries: 3 });
+  });
   it("returns zero-safe metrics for an empty dataset", () => {
     const result = aggregateEnquiryMetrics([]);
     expect(result.conversionRate).toBe(0);
