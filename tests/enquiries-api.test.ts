@@ -10,6 +10,14 @@ describe("POST /api/enquiries", () => {
     expect((await response.json()).status).toBe("accepted");
   });
 
+  it("returns an explainable lead score for triage", async () => {
+    const response = await POST(new Request("http://localhost/api/enquiries", { method: "POST", body: JSON.stringify({ ...valid, travellers: 4 }) }));
+    const body = await response.json();
+    expect(body.lead.score).toBeGreaterThan(30);
+    expect(body.lead.reasons).toContain("Group has at least four travellers");
+    expect(response.headers.get("cache-control")).toBe("no-store");
+  });
+
   it("rejects invalid enquiry data", async () => {
     const response = await POST(new Request("http://localhost/api/enquiries", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ ...valid, travellers: 0 }) }));
     expect(response.status).toBe(422);
