@@ -9,7 +9,9 @@ describe("POST /api/itineraries", () => {
   it("returns a validated itinerary", async () => {
     const response = await POST(request({ dayCount: 2, activities: [{ day: 1, title: "Game drive", startTime: "08:00", endTime: "10:00" }] }));
     expect(response.status).toBe(200);
-    expect((await response.json()).days[0].activities[0].durationMinutes).toBe(120);
+    const payload = await response.json();
+    expect(payload.days[0].activities[0].durationMinutes).toBe(120);
+    expect(payload.summary).toEqual({ days: 2, plannedActivities: 1, plannedMinutes: 120, unplannedDays: 1 });
   });
 
   it("rejects overlapping activities", async () => {

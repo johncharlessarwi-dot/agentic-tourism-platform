@@ -8,6 +8,7 @@ export type ItineraryActivityInput = {
 
 export type ItineraryActivity = ItineraryActivityInput & { durationMinutes: number };
 export type ItineraryDay = { day: number; activities: ItineraryActivity[] };
+export type ItinerarySummary = { days: number; plannedActivities: number; plannedMinutes: number; unplannedDays: number };
 
 function toMinutes(value: string): number | null {
   if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(value)) return null;
@@ -37,4 +38,13 @@ export function buildItinerary(dayCount: number, activities: ItineraryActivityIn
     }
   }
   return days;
+}
+
+export function summarizeItinerary(days: ItineraryDay[]): ItinerarySummary {
+  return {
+    days: days.length,
+    plannedActivities: days.reduce((count, day) => count + day.activities.length, 0),
+    plannedMinutes: days.reduce((minutes, day) => minutes + day.activities.reduce((total, activity) => total + activity.durationMinutes, 0), 0),
+    unplannedDays: days.filter((day) => day.activities.length === 0).length,
+  };
 }

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { buildItinerary } from "../../../lib/itinerary";
+import { buildItinerary, summarizeItinerary } from "../../../lib/itinerary";
 
 const activitySchema = z.object({
   day: z.number().int().min(1).max(30),
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
   if (!parsed.success) return NextResponse.json({ error: "Invalid itinerary", issues: parsed.error.issues }, { status: 422 });
   try {
     const days = buildItinerary(parsed.data.dayCount, parsed.data.activities);
-    return NextResponse.json({ days }, { headers: { "Cache-Control": "no-store" } });
+    return NextResponse.json({ days, summary: summarizeItinerary(days) }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Invalid itinerary" }, { status: 422 });
   }
