@@ -4,10 +4,13 @@ import { POST } from "../app/api/enquiries/route";
 const valid = { fullName: "Asha Mushi", email: "asha@example.com", destination: "Lake Manyara", travellers: 2 };
 
 describe("POST /api/enquiries", () => {
-  it("accepts a valid enquiry without claiming persistence", async () => {
+  it("validates without claiming persistence or echoing guest personal data", async () => {
     const response = await POST(new Request("http://localhost/api/enquiries", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(valid) }));
-    expect(response.status).toBe(202);
-    expect((await response.json()).status).toBe("accepted");
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.status).toBe("validated");
+    expect(body.stored).toBe(false);
+    expect(JSON.stringify(body)).not.toContain("asha@example.com");
   });
 
   it("returns an explainable lead score for triage", async () => {
