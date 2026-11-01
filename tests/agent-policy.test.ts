@@ -25,4 +25,10 @@ describe("agent action policy", () => {
   it("allows an explicitly approved admin financial action", () => {
     expect(authorizeAgentAction({ ...base, actorRole: "admin", tool: "issue_refund", approved: true }).allowed).toBe(true);
   });
+  it("denies even approved actions when audit identifiers are missing", () => {
+    const result = authorizeAgentAction({ ...base, actorId: "  ", tool: "update_booking", approved: true });
+    expect(result.allowed).toBe(false);
+    expect(result.reason).toMatch(/audit trail/);
+    expect(result.auditEvent.decision).toBe("denied");
+  });
 });

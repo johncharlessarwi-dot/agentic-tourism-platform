@@ -34,8 +34,11 @@ export function authorizeAgentAction(input: AgentAuthorizationInput): AgentAutho
   const roleAllowed = rolePermissions[input.actorRole].includes(permission);
   const approvalRequired = permission !== "read";
   const approved = !approvalRequired || input.approved === true;
-  const allowed = roleAllowed && approved;
-  const reason = !roleAllowed
+  const traceable = input.actorId.trim().length > 0 && input.requestId.trim().length > 0;
+  const allowed = traceable && roleAllowed && approved;
+  const reason = !traceable
+    ? "Actor and request identifiers are required for an audit trail"
+    : !roleAllowed
     ? `Role ${input.actorRole} cannot perform ${permission} actions`
     : !approved
       ? "Explicit human approval is required for this action"
