@@ -3,3 +3,11 @@ venv/
 .env
 .DS_Store
 *.sqlite3
+node_modules/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+.env.*.local
+npm-debug.log*
