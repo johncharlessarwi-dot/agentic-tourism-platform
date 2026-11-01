@@ -1,0 +1,22 @@
+import { describe, expect, it } from "vitest";
+import { POST } from "../app/api/itineraries/route";
+
+function request(body: unknown) {
+  return new Request("http://localhost/api/itineraries", { method: "POST", body: JSON.stringify(body) });
+}
+
+describe("POST /api/itineraries", () => {
+  it("returns a validated itinerary", async () => {
+    const response = await POST(request({ dayCount: 2, activities: [{ day: 1, title: "Game drive", startTime: "08:00", endTime: "10:00" }] }));
+    expect(response.status).toBe(200);
+    expect((await response.json()).days[0].activities[0].durationMinutes).toBe(120);
+  });
+
+  it("rejects overlapping activities", async () => {
+    const response = await POST(request({ dayCount: 1, activities: [
+      { day: 1, title: "Walk", startTime: "08:00", endTime: "10:00" },
+      { day: 1, title: "Drive", startTime: "09:00", endTime: "11:00" },
+    ] }));
+    expect(response.status).toBe(422);
+  });
+});
