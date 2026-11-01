@@ -2,6 +2,10 @@ export class RequestTooLargeError extends Error {
   constructor() { super("Request body exceeds the 16 KB limit"); }
 }
 
+export function isJsonContentType(request: Request): boolean {
+  return /^application\/json(?:\s*;|\s*$)/i.test(request.headers.get("content-type") ?? "");
+}
+
 /** Read a bounded JSON body without buffering an arbitrarily large request. */
 export async function readLimitedJson(request: Request, maxBytes = 16_384): Promise<unknown> {
   const length = request.headers.get("content-length");

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { POST } from "../app/api/itineraries/route";
 
 function request(body: unknown) {
-  return new Request("http://localhost/api/itineraries", { method: "POST", body: JSON.stringify(body) });
+  return new Request("http://localhost/api/itineraries", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
 }
 
 describe("POST /api/itineraries", () => {

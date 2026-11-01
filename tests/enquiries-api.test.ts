@@ -14,7 +14,7 @@ describe("POST /api/enquiries", () => {
   });
 
   it("returns an explainable lead score for triage", async () => {
-    const response = await POST(new Request("http://localhost/api/enquiries", { method: "POST", body: JSON.stringify({ ...valid, travellers: 4 }) }));
+    const response = await POST(new Request("http://localhost/api/enquiries", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ ...valid, travellers: 4 }) }));
     const body = await response.json();
     expect(body.lead.score).toBeGreaterThan(30);
     expect(body.lead.reasons).toContain("Group has at least four travellers");
@@ -27,7 +27,12 @@ describe("POST /api/enquiries", () => {
   });
 
   it("rejects malformed JSON", async () => {
-    const response = await POST(new Request("http://localhost/api/enquiries", { method: "POST", body: "{" }));
+    const response = await POST(new Request("http://localhost/api/enquiries", { method: "POST", headers: { "content-type": "application/json" }, body: "{" }));
     expect(response.status).toBe(400);
+  });
+
+  it("rejects cross-origin form style content types", async () => {
+    const response = await POST(new Request("http://localhost/api/enquiries", { method: "POST", headers: { "content-type": "text/plain" }, body: "{}" }));
+    expect(response.status).toBe(415);
   });
 });
