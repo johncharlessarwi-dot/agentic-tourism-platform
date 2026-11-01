@@ -34,6 +34,8 @@ npm run dev
 
 Visit `http://localhost:3000`. No credentials are needed for the current demo.
 
+For a deployed website, set `NEXT_PUBLIC_SITE_URL` to the verified public origin (without a path). This enables absolute canonical metadata and `/sitemap.xml`; without a configured origin, the sitemap intentionally contains no URLs.
+
 ## Check quality
 
 ```bash
