@@ -10,11 +10,18 @@ export type EnquiryAnalytics = {
 };
 
 export function aggregateEnquiryMetrics(records: EnquiryMetricInput[]): EnquiryAnalytics {
+  if (!Array.isArray(records) || records.length > 100_000) throw new Error("Invalid enquiry dataset size");
+  const validStatuses = new Set<EnquiryStatus>(["new", "contacted", "quoted", "booked", "lost"]);
   const statusCounts: Record<EnquiryStatus, number> = { new: 0, contacted: 0, quoted: 0, booked: 0, lost: 0 };
   const destinationCounts = new Map<string, { label: string; enquiries: number }>();
   let totalTravellers = 0;
 
   for (const record of records) {
+    if (!record || !validStatuses.has(record.status) ||
+        !Number.isSafeInteger(record.travellers) || record.travellers < 1 || record.travellers > 100 ||
+        typeof record.destination !== "string" || record.destination.length > 160) {
+      throw new Error("Invalid enquiry record");
+    }
     statusCounts[record.status] += 1;
     totalTravellers += record.travellers;
     const destination = record.destination.trim().replace(/\s+/g, " ");
