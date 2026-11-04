@@ -30,6 +30,14 @@ export type AgentAuthorization = {
 };
 
 export function authorizeAgentAction(input: AgentAuthorizationInput): AgentAuthorization {
+  if (!input || !Object.prototype.hasOwnProperty.call(toolPermissions, input.tool) ||
+      !Object.prototype.hasOwnProperty.call(rolePermissions, input.actorRole)) {
+    throw new Error("Unknown agent role or tool; action denied");
+  }
+  if (typeof input.actorId !== "string" || typeof input.requestId !== "string" ||
+      input.actorId.length > 128 || input.requestId.length > 128) {
+    throw new Error("Invalid agent audit identifiers; action denied");
+  }
   const permission = toolPermissions[input.tool];
   const roleAllowed = rolePermissions[input.actorRole].includes(permission);
   const approvalRequired = permission !== "read";
