@@ -18,9 +18,15 @@ function toMinutes(value: string): number | null {
 
 export function buildItinerary(dayCount: number, activities: ItineraryActivityInput[]): ItineraryDay[] {
   if (!Number.isInteger(dayCount) || dayCount < 1 || dayCount > 30) throw new Error("Trip length must be between 1 and 30 days");
+  if (!Array.isArray(activities) || activities.length > 300) throw new Error("Trip activities must be limited to 300");
   const days: ItineraryDay[] = Array.from({ length: dayCount }, (_, index) => ({ day: index + 1, activities: [] }));
 
   for (const activity of activities) {
+    if (!activity || typeof activity.title !== "string" || activity.title.trim().length > 160 ||
+        typeof activity.startTime !== "string" || typeof activity.endTime !== "string" ||
+        (activity.location !== undefined && (typeof activity.location !== "string" || activity.location.length > 160))) {
+      throw new Error("Invalid activity details");
+    }
     if (!Number.isInteger(activity.day) || activity.day < 1 || activity.day > dayCount) throw new Error(`Activity day must be between 1 and ${dayCount}`);
     if (!activity.title.trim()) throw new Error("Activity title is required");
     const start = toMinutes(activity.startTime);
