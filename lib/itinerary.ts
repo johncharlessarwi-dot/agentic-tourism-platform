@@ -54,3 +54,22 @@ export function summarizeItinerary(days: ItineraryDay[]): ItinerarySummary {
     unplannedDays: days.filter((day) => day.activities.length === 0).length,
   };
 }
+
+/** Advisory free-time calculation; excludes overnight time and does not book transfers. */
+export function summarizeItineraryGaps(days: ItineraryDay[]): { freeMinutesBetweenActivities: number; gaps: number } {
+  let freeMinutesBetweenActivities = 0;
+  let gaps = 0;
+  for (const day of days) {
+    const sorted = [...day.activities].sort((a, b) => a.startTime.localeCompare(b.startTime));
+    for (let index = 1; index < sorted.length; index += 1) {
+      const previousEnd = toMinutes(sorted[index - 1].endTime);
+      const nextStart = toMinutes(sorted[index].startTime);
+      if (previousEnd === null || nextStart === null || nextStart < previousEnd) throw new Error("Invalid itinerary gap");
+      if (nextStart > previousEnd) {
+        freeMinutesBetweenActivities += nextStart - previousEnd;
+        gaps += 1;
+      }
+    }
+  }
+  return { freeMinutesBetweenActivities, gaps };
+}
