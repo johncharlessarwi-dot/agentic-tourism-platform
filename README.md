@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="assets/readme/project-motion.svg" width="100%" alt="SAFARIOS animated overview banner" />
+</div>
+
 # SafariOS — East African Tourism Intelligence
 
 [![CI](https://github.com/johncharlessarwi-dot/agentic-tourism-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/johncharlessarwi-dot/agentic-tourism-platform/actions/workflows/ci.yml)
