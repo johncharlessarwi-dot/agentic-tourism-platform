@@ -27,10 +27,10 @@ describe("agent action policy", () => {
   });
   it("rejects newlines and control characters in audit identifiers", () => {
     expect(() => authorizeAgentAction({
-      ...base, actorId: "operator-1\\nspoofed", tool: "search_destinations"
+      ...base, actorId: "operator-1\nspoofed", tool: "search_destinations"
     })).toThrow(/Invalid agent audit identifiers/);
     expect(() => authorizeAgentAction({
-      ...base, requestId: "req-001\\rspoofed", tool: "update_booking", approved: true
+      ...base, requestId: "req-001\rspoofed", tool: "update_booking", approved: true
     })).toThrow(/Invalid agent audit identifiers/);
   });
   it("denies even approved actions when audit identifiers are missing", () => {
