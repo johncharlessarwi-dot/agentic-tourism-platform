@@ -1,7 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { readLimitedJson, RequestTooLargeError } from "../lib/request-json";
+import { isJsonContentType, readLimitedJson, RequestTooLargeError } from "../lib/request-json";
 
 describe("bounded JSON request reader", () => {
+  it("accepts JSON media type parameters and rejects malformed trailing parameters", () => {
+    const request = (contentType: string) => new Request("http://localhost", { headers: { "content-type": contentType } });
+    expect(isJsonContentType(request("application/json"))).toBe(true);
+    expect(isJsonContentType(request("application/json; charset=utf-8"))).toBe(true);
+    expect(isJsonContentType(request('application/json; charset="utf-8"'))).toBe(true);
+    expect(isJsonContentType(request("application/json; unknown"))).toBe(false);
+    expect(isJsonContentType(request("application/json; charset=utf-8; unexpected"))).toBe(false);
+    expect(isJsonContentType(request("application/jsonjunk"))).toBe(false);
+  });
   it("decodes valid JSON", async () => {
     expect(await readLimitedJson(new Request("http://localhost", { method: "POST", body: '{"ok":true}' }))).toEqual({ ok: true });
   });
