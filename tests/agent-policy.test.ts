@@ -25,6 +25,14 @@ describe("agent action policy", () => {
   it("allows an explicitly approved admin financial action", () => {
     expect(authorizeAgentAction({ ...base, actorRole: "admin", tool: "issue_refund", approved: true }).allowed).toBe(true);
   });
+  it("rejects newlines and control characters in audit identifiers", () => {
+    expect(() => authorizeAgentAction({
+      ...base, actorId: "operator-1\nspoofed", tool: "search_destinations"
+    })).toThrow(/Invalid agent audit identifiers/);
+    expect(() => authorizeAgentAction({
+      ...base, requestId: "req-001\rspoofed", tool: "update_booking", approved: true
+    })).toThrow(/Invalid agent audit identifiers/);
+  });
   it("denies even approved actions when audit identifiers are missing", () => {
     const result = authorizeAgentAction({ ...base, actorId: "  ", tool: "update_booking", approved: true });
     expect(result.allowed).toBe(false);
