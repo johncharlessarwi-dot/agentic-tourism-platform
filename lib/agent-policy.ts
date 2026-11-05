@@ -35,7 +35,8 @@ export function authorizeAgentAction(input: AgentAuthorizationInput): AgentAutho
     throw new Error("Unknown agent role or tool; action denied");
   }
   if (typeof input.actorId !== "string" || typeof input.requestId !== "string" ||
-      input.actorId.length > 128 || input.requestId.length > 128) {
+      input.actorId.length > 128 || input.requestId.length > 128 ||
+      /[\u0000-\u001f\u007f]/.test(input.actorId) || /[\u0000-\u001f\u007f]/.test(input.requestId)) {
     throw new Error("Invalid agent audit identifiers; action denied");
   }
   const permission = toolPermissions[input.tool];
