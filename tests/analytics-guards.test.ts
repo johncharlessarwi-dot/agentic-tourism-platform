@@ -11,4 +11,12 @@ describe("analytics input integrity", () => {
     expect(metrics.conversionRate).toBe(100);
     expect(metrics.totalTravellers).toBe(3);
   });
+
+  it("rejects blank destinations instead of silently omitting them from rankings", () => {
+    for (const destination of ["", " ", "\t\n"]) {
+      expect(() => aggregateEnquiryMetrics([{ destination, status: "new", travellers: 2 }])).toThrow(/Invalid/);
+    }
+    const metrics = aggregateEnquiryMetrics([{ destination: " Moshi  ", status: "booked", travellers: 2 }]);
+    expect(metrics.topDestinations[0].destination).toBe("Moshi");
+  });
 });
