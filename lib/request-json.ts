@@ -3,7 +3,7 @@ export class RequestTooLargeError extends Error {
 }
 
 export function isJsonContentType(request: Request): boolean {
-  return /^application\/json(?:\s*;|\s*$)/i.test(request.headers.get("content-type") ?? "");
+  return /^application\/json(?:\s*;\s*[a-z0-9!#$%&\x27*+.^_`|~-]+\s*=\s*(?:[a-z0-9!#$%&\x27*+.^_`|~-]+|"(?:[^"\\\\]|\\\\.)*")\s*)*$/i.test(request.headers.get("content-type") ?? "");
 }
 
 /** Read a bounded JSON body without buffering an arbitrarily large request. */
