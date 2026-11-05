@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildItinerary } from "../lib/itinerary";
+import { buildItinerary, summarizeItineraryGaps } from "../lib/itinerary";
 
 describe("itinerary planner", () => {
   it("creates all requested days and sorts activities by start time", () => {
@@ -23,6 +23,20 @@ describe("itinerary planner", () => {
       { day: 1, title: "Transfer", startTime: "10:30", endTime: "12:00" }
     ])).toThrow(/overlap/);
   });
+  it("reports gaps between activities without counting overnight or leading free time", () => {
+    const days = buildItinerary(2, [
+      { day: 1, title: "Morning safari", startTime: "08:00", endTime: "10:00" },
+      { day: 1, title: "Lunch", startTime: "11:30", endTime: "12:30" },
+      { day: 1, title: "Museum", startTime: "12:30", endTime: "14:00" },
+      { day: 2, title: "Lake visit", startTime: "09:00", endTime: "11:00" }
+    ]);
+    expect(summarizeItineraryGaps(days)).toEqual({ freeMinutesBetweenActivities: 90, gaps: 1 });
+  });
+
+  it("returns zero gaps for an empty itinerary", () => {
+    expect(summarizeItineraryGaps(buildItinerary(2, []))).toEqual({ freeMinutesBetweenActivities: 0, gaps: 0 });
+  });
+
   it("limits trip length", () => {
     expect(() => buildItinerary(31, [])).toThrow(/between 1 and 30/);
   });
