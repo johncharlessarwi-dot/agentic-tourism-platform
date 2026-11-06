@@ -28,5 +28,6 @@ export function searchDestinations(query = "", category?: DestinationCategory, c
 }
 
 export function getDestinationBySlug(slug: string): Destination | undefined {
-  return destinations.find((destination) => destination.slug === slug);
+  const normalizedSlug = slug.trim().toLocaleLowerCase();
+  return destinations.find((destination) => destination.slug === normalizedSlug);
 }
