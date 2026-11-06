@@ -37,6 +37,14 @@ describe("itinerary planner", () => {
     expect(summarizeItineraryGaps(buildItinerary(2, []))).toEqual({ freeMinutesBetweenActivities: 0, gaps: 0 });
   });
 
+  it("rejects blank optional activity locations", () => {
+    expect(() => buildItinerary(1, [{ day: 1, title: "Safari", startTime: "08:00", endTime: "10:00", location: "   " }])).toThrow(/Invalid activity details/);
+  });
+  it("trims activity locations and validates the normalized length", () => {
+    const days = buildItinerary(1, [{ day: 1, title: "Safari", startTime: "08:00", endTime: "10:00", location: "  Serengeti Gate  " }]);
+    expect(days[0].activities[0].location).toBe("Serengeti Gate");
+    expect(() => buildItinerary(1, [{ day: 1, title: "Safari", startTime: "08:00", endTime: "10:00", location: "x".repeat(161) }])).toThrow(/Invalid activity details/);
+  });
   it("limits trip length", () => {
     expect(() => buildItinerary(31, [])).toThrow(/between 1 and 30/);
   });
