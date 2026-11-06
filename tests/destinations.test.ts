@@ -13,6 +13,14 @@ describe("destination catalog", () => {
   it("searches highlights without case sensitivity", () => {
     expect(searchDestinations("stone town")[0]?.slug).toBe("zanzibar");
   });
+  it("normalizes extra whitespace in destination searches", () => {
+    expect(searchDestinations("  Stone   Town  ")[0]?.slug).toBe("zanzibar");
+    expect(searchDestinations("Stone\\tTown")[0]?.slug).toBe("zanzibar");
+  });
+  it("supports searching by destination slug", () => {
+    expect(searchDestinations("masai-mara")[0]?.name).toBe("Maasai Mara");
+    expect(searchDestinations("ngorongoro")[0]?.slug).toBe("ngorongoro");
+  });
   it("returns undefined for an unknown slug", () => {
     expect(getDestinationBySlug("unknown-place")).toBeUndefined();
   });
