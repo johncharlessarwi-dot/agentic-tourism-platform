@@ -18,6 +18,16 @@ describe("bounded JSON request reader", () => {
     const request = new Request("http://localhost", { method: "POST", body: "x".repeat(20_000) });
     await expect(readLimitedJson(request)).rejects.toBeInstanceOf(RequestTooLargeError);
   });
+  it("releases the request stream lock after successful reading", async () => {
+    const request = new Request("http://localhost", { method: "POST", body: "{}" });
+    await readLimitedJson(request);
+    expect(request.body?.locked).toBe(false);
+  });
+  it("releases the stream lock when the streamed body is too large", async () => {
+    const request = new Request("http://localhost", { method: "POST", body: "x".repeat(20_000) });
+    await expect(readLimitedJson(request)).rejects.toBeInstanceOf(RequestTooLargeError);
+    expect(request.body?.locked).toBe(false);
+  });
   it("rejects an announced oversized body before reading it", async () => {
     const request = new Request("http://localhost", { method: "POST", headers: { "content-length": "30000" }, body: "{}" });
     await expect(readLimitedJson(request)).rejects.toBeInstanceOf(RequestTooLargeError);
