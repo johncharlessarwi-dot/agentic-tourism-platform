@@ -32,7 +32,7 @@ export function buildItinerary(dayCount: number, activities: ItineraryActivityIn
     const start = toMinutes(activity.startTime);
     const end = toMinutes(activity.endTime);
     if (start === null || end === null || end <= start) throw new Error("Activity times must be valid and end after they start");
-    days[activity.day - 1].activities.push({ ...activity, title: activity.title.trim(), durationMinutes: end - start });
+    days[activity.day - 1].activities.push({ ...activity, title: activity.title.trim(), location: activity.location?.trim(), durationMinutes: end - start });
   }
 
   for (const day of days) {
