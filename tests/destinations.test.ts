@@ -21,6 +21,13 @@ describe("destination catalog", () => {
     expect(searchDestinations("masai-mara")[0]?.name).toBe("Maasai Mara");
     expect(searchDestinations("ngorongoro")[0]?.slug).toBe("ngorongoro");
   });
+  it("matches spaced versions of hyphenated destination slugs", () => {
+    expect(searchDestinations("Masai Mara")[0]?.slug).toBe("masai-mara");
+  });
+  it("resolves slugs regardless of case or surrounding spaces", () => {
+    expect(getDestinationBySlug("  ZANZIBAR  ")?.slug).toBe("zanzibar");
+    expect(getDestinationBySlug("Masai-Mara")?.name).toBe("Maasai Mara");
+  });
   it("returns undefined for an unknown slug", () => {
     expect(getDestinationBySlug("unknown-place")).toBeUndefined();
   });
