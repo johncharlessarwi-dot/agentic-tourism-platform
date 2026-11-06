@@ -33,6 +33,12 @@ describe("agent action policy", () => {
       ...base, requestId: "req-001\rspoofed", tool: "update_booking", approved: true
     })).toThrow(/Invalid agent audit identifiers/);
   });
+  it("normalizes padded identifiers in successful audit records", () => {
+    const result = authorizeAgentAction({ ...base, actorId: " operator-1 ", requestId: " req-001 ", tool: "search_destinations" });
+    expect(result.allowed).toBe(true);
+    expect(result.auditEvent.actorId).toBe("operator-1");
+    expect(result.auditEvent.requestId).toBe("req-001");
+  });
   it("denies even approved actions when audit identifiers are missing", () => {
     const result = authorizeAgentAction({ ...base, actorId: "  ", tool: "update_booking", approved: true });
     expect(result.allowed).toBe(false);
