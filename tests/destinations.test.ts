@@ -15,7 +15,7 @@ describe("destination catalog", () => {
   });
   it("normalizes extra whitespace in destination searches", () => {
     expect(searchDestinations("  Stone   Town  ")[0]?.slug).toBe("zanzibar");
-    expect(searchDestinations("Stone\\tTown")[0]?.slug).toBe("zanzibar");
+    expect(searchDestinations("Stone\tTown")[0]?.slug).toBe("zanzibar");
   });
   it("supports searching by destination slug", () => {
     expect(searchDestinations("masai-mara")[0]?.name).toBe("Maasai Mara");
