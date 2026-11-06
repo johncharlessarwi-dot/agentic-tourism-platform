@@ -39,11 +39,13 @@ export function authorizeAgentAction(input: AgentAuthorizationInput): AgentAutho
       /[\u0000-\u001f\u007f]/.test(input.actorId) || /[\u0000-\u001f\u007f]/.test(input.requestId)) {
     throw new Error("Invalid agent audit identifiers; action denied");
   }
+  const actorId = input.actorId.trim();
+  const requestId = input.requestId.trim();
   const permission = toolPermissions[input.tool];
   const roleAllowed = rolePermissions[input.actorRole].includes(permission);
   const approvalRequired = permission !== "read";
   const approved = !approvalRequired || input.approved === true;
-  const traceable = input.actorId.trim().length > 0 && input.requestId.trim().length > 0;
+  const traceable = actorId.length > 0 && requestId.length > 0;
   const allowed = traceable && roleAllowed && approved;
   const reason = !traceable
     ? "Actor and request identifiers are required for an audit trail"
@@ -57,8 +59,8 @@ export function authorizeAgentAction(input: AgentAuthorizationInput): AgentAutho
     allowed,
     reason,
     auditEvent: {
-      requestId: input.requestId,
-      actorId: input.actorId,
+      requestId,
+      actorId,
       actorRole: input.actorRole,
       tool: input.tool,
       permission,
