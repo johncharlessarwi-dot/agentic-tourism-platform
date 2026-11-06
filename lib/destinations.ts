@@ -22,7 +22,7 @@ export const destinations: Destination[] = [
 export function searchDestinations(query = "", category?: DestinationCategory, country?: Destination["country"]): Destination[] {
   const term = query.trim().replace(/\s+/g, " ").toLocaleLowerCase();
   return destinations.filter((destination) => {
-    const matchesText = !term || [destination.name, destination.summary, ...destination.highlights].some((value) => value.toLocaleLowerCase().includes(term));
+    const matchesText = !term || [destination.slug, destination.name, destination.summary, ...destination.highlights].some((value) => value.toLocaleLowerCase().includes(term));
     return matchesText && (!category || destination.category === category) && (!country || destination.country === country);
   });
 }
