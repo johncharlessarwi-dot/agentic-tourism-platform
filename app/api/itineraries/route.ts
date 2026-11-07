@@ -5,7 +5,7 @@ import { isJsonContentType, readLimitedJson, RequestTooLargeError } from "../../
 
 const activitySchema = z.object({
   day: z.number().int().min(1).max(30),
-  title: z.string().trim().min(1).max(120),
+  title: z.string().trim().min(1).max(160),
   startTime: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
   endTime: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
   location: z.string().trim().max(120).optional(),
