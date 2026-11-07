@@ -107,4 +107,7 @@ describe("security hardening regression", () => {
   it("denies whitespace-only request identifiers", () => {
     expect(authorizeAgentAction({ actorId: "admin-1", actorRole: "admin", requestId: "  ", tool: "issue_refund", approved: true }).allowed).toBe(false);
   });
+  it("denies overlong audit actors", () => {
+    expect(() => authorizeAgentAction({ actorId: "a".repeat(129), actorRole: "viewer", requestId: "req-1", tool: "search_destinations" })).toThrow(/Invalid agent audit identifiers/);
+  });
 });
