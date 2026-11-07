@@ -80,4 +80,7 @@ describe("security hardening regression", () => {
   it("rejects control characters in analytics labels", () => {
     expect(() => aggregateEnquiryMetrics([{ destination: "Safari\nInjected", travellers: 2, status: "new" }])).toThrow(/Invalid enquiry record/);
   });
+  it("denies viewer enquiry creation even with approval", () => {
+    expect(authorizeAgentAction({ actorId: "viewer-1", actorRole: "viewer", requestId: "req-viewer", tool: "create_enquiry", approved: true }).allowed).toBe(false);
+  });
 });
