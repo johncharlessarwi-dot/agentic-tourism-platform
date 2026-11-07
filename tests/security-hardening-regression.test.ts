@@ -131,4 +131,7 @@ describe("security hardening regression", () => {
   it("rejects extra itinerary fields at API boundary", async () => {
     const response = await postItinerary(postJson("http://localhost/api/itineraries", { dayCount: 1, activities: [], admin: true })); expect(response.status).toBe(422);
   });
+  it("refuses to accept an overlapping itinerary via API", async () => {
+    const response = await postItinerary(postJson("http://localhost/api/itineraries", { dayCount: 1, activities: [itineraryActivity, { ...itineraryActivity, title: "Other", startTime: "09:00", endTime: "10:30" }] })); expect(response.status).toBe(422);
+  });
 });
