@@ -26,4 +26,7 @@ function postJson(url: string, payload: unknown): Request {
 }
 
 describe("security hardening regression", () => {
+  it("rejects extra guest fields", () => {
+    expect(enquirySchema.safeParse({ ...validEnquiry, isAdmin: true }).success).toBe(false);
+  });
 });
