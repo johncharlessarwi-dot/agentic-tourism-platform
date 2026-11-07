@@ -128,4 +128,7 @@ describe("security hardening regression", () => {
   it("does not echo private guest identity in enquiry response", async () => {
     const response = await postEnquiry(postJson("http://localhost/api/enquiries", validEnquiry)); const body = await response.text(); expect(body).not.toContain(validEnquiry.email); expect(body).not.toContain(validEnquiry.fullName);
   });
+  it("rejects extra itinerary fields at API boundary", async () => {
+    const response = await postItinerary(postJson("http://localhost/api/itineraries", { dayCount: 1, activities: [], admin: true })); expect(response.status).toBe(422);
+  });
 });
