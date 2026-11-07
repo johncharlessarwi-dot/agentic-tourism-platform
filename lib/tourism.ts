@@ -6,7 +6,7 @@ export const enquirySchema = z.object({
   destination: z.string().trim().min(2).max(120).regex(/^[^\u0000-\u001f\u007f]+$/),
   travelDate: z.iso.date().optional(),
   travellers: z.number().int().min(1).max(100),
-  message: z.string().trim().max(2000).optional(),
+  message: z.string().trim().max(2000).regex(/^[^\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]*$/).optional(),
 }).strict();
 
 export type TourismEnquiry = z.infer<typeof enquirySchema>;
