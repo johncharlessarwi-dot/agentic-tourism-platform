@@ -59,4 +59,7 @@ describe("security hardening regression", () => {
   it("rejects tab control characters in itinerary titles", () => {
     expect(() => buildItinerary(1, [{ ...itineraryActivity, title: "Drive\tspoof" }])).toThrow(/Invalid activity details/);
   });
+  it("rejects newline control characters in itinerary titles", () => {
+    expect(() => buildItinerary(1, [{ ...itineraryActivity, title: "Drive\nspoof" }])).toThrow(/Invalid activity details/);
+  });
 });
