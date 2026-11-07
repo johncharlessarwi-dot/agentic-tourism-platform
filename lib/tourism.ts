@@ -7,7 +7,7 @@ export const enquirySchema = z.object({
   travelDate: z.iso.date().optional(),
   travellers: z.number().int().min(1).max(100),
   message: z.string().trim().max(2000).optional(),
-});
+}).strict();
 
 export type TourismEnquiry = z.infer<typeof enquirySchema>;
 
