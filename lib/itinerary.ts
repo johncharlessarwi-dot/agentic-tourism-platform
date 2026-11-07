@@ -23,6 +23,7 @@ export function buildItinerary(dayCount: number, activities: ItineraryActivityIn
 
   for (const activity of activities) {
     if (!activity || typeof activity.title !== "string" || activity.title.trim().length > 160 ||
+        /[\u0000-\u001f\u007f]/.test(activity.title) ||
         typeof activity.startTime !== "string" || typeof activity.endTime !== "string" ||
         (activity.location !== undefined && (typeof activity.location !== "string" || !activity.location.trim() || activity.location.trim().length > 160))) {
       throw new Error("Invalid activity details");
