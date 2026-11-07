@@ -35,4 +35,7 @@ describe("security hardening regression", () => {
   it("trims padded guest email", () => {
     expect(enquirySchema.parse({ ...validEnquiry, email: " john@example.com " }).email).toBe("john@example.com");
   });
+  it("rejects oversized guest email", () => {
+    expect(enquirySchema.safeParse({ ...validEnquiry, email: "a".repeat(250) + "@example.com" }).success).toBe(false);
+  });
 });
