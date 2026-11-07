@@ -71,4 +71,7 @@ describe("security hardening regression", () => {
   it("rejects empty itinerary locations", () => {
     expect(() => buildItinerary(1, [{ ...itineraryActivity, location: "  " }])).toThrow(/Invalid activity details/);
   });
+  it("keeps adjacent itinerary activities valid", () => {
+    expect(buildItinerary(1, [itineraryActivity, { ...itineraryActivity, title: "Lunch", startTime: "10:00", endTime: "11:00" }])[0].activities).toHaveLength(2);
+  });
 });
