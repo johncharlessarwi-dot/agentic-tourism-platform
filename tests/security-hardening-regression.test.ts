@@ -38,4 +38,7 @@ describe("security hardening regression", () => {
   it("rejects oversized guest email", () => {
     expect(enquirySchema.safeParse({ ...validEnquiry, email: "a".repeat(250) + "@example.com" }).success).toBe(false);
   });
+  it("rejects carriage returns in guest names", () => {
+    expect(enquirySchema.safeParse({ ...validEnquiry, fullName: "Guest\rInjected" }).success).toBe(false);
+  });
 });
