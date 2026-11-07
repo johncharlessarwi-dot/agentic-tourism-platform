@@ -110,4 +110,7 @@ describe("security hardening regression", () => {
   it("denies overlong audit actors", () => {
     expect(() => authorizeAgentAction({ actorId: "a".repeat(129), actorRole: "viewer", requestId: "req-1", tool: "search_destinations" })).toThrow(/Invalid agent audit identifiers/);
   });
+  it("denies newline-spoofed audit requests", () => {
+    expect(() => authorizeAgentAction({ actorId: "admin-1", actorRole: "admin", requestId: "req-1\nforged", tool: "issue_refund", approved: true })).toThrow(/Invalid agent audit identifiers/);
+  });
 });
