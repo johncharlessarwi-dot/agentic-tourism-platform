@@ -50,4 +50,7 @@ describe("security hardening regression", () => {
   it("rejects line feeds in destinations", () => {
     expect(enquirySchema.safeParse({ ...validEnquiry, destination: "Kilimanjaro\nInjected" }).success).toBe(false);
   });
+  it("rejects null bytes in guest messages", () => {
+    expect(enquirySchema.safeParse({ ...validEnquiry, message: "Please book\u0000hidden" }).success).toBe(false);
+  });
 });
