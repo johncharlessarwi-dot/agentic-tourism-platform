@@ -74,4 +74,7 @@ describe("security hardening regression", () => {
   it("keeps adjacent itinerary activities valid", () => {
     expect(buildItinerary(1, [itineraryActivity, { ...itineraryActivity, title: "Lunch", startTime: "10:00", endTime: "11:00" }])[0].activities).toHaveLength(2);
   });
+  it("searches destinations by country name", () => {
+    expect(searchDestinations("Tanzania").some((destination) => destination.slug === "kilimanjaro")).toBe(true);
+  });
 });
