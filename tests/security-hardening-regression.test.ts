@@ -41,4 +41,7 @@ describe("security hardening regression", () => {
   it("rejects carriage returns in guest names", () => {
     expect(enquirySchema.safeParse({ ...validEnquiry, fullName: "Guest\rInjected" }).success).toBe(false);
   });
+  it("rejects line feeds in guest names", () => {
+    expect(enquirySchema.safeParse({ ...validEnquiry, fullName: "Guest\nInjected" }).success).toBe(false);
+  });
 });
