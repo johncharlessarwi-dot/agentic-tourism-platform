@@ -125,4 +125,7 @@ describe("security hardening regression", () => {
   it("does not claim to store validated guest enquiries", async () => {
     const response = await postEnquiry(postJson("http://localhost/api/enquiries", validEnquiry)); expect(response.status).toBe(200); const body = await response.json(); expect(body.stored).toBe(false); expect(body.status).toBe("validated");
   });
+  it("does not echo private guest identity in enquiry response", async () => {
+    const response = await postEnquiry(postJson("http://localhost/api/enquiries", validEnquiry)); const body = await response.text(); expect(body).not.toContain(validEnquiry.email); expect(body).not.toContain(validEnquiry.fullName);
+  });
 });
