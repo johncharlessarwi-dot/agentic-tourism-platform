@@ -32,4 +32,7 @@ describe("security hardening regression", () => {
   it("normalizes uppercase guest emails", () => {
     expect(enquirySchema.parse({ ...validEnquiry, email: "JOHN@EXAMPLE.COM" }).email).toBe("john@example.com");
   });
+  it("trims padded guest email", () => {
+    expect(enquirySchema.parse({ ...validEnquiry, email: " john@example.com " }).email).toBe("john@example.com");
+  });
 });
