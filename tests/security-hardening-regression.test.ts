@@ -65,4 +65,7 @@ describe("security hardening regression", () => {
   it("rejects null control characters in itinerary locations", () => {
     expect(() => buildItinerary(1, [{ ...itineraryActivity, location: "Park\u0000hidden" }])).toThrow(/Invalid activity details/);
   });
+  it("rejects newline characters in itinerary locations", () => {
+    expect(() => buildItinerary(1, [{ ...itineraryActivity, location: "Park\nother" }])).toThrow(/Invalid activity details/);
+  });
 });
