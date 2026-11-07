@@ -113,4 +113,7 @@ describe("security hardening regression", () => {
   it("denies newline-spoofed audit requests", () => {
     expect(() => authorizeAgentAction({ actorId: "admin-1", actorRole: "admin", requestId: "req-1\nforged", tool: "issue_refund", approved: true })).toThrow(/Invalid agent audit identifiers/);
   });
+  it("rejects duplicate destination query values", async () => {
+    const response = await getDestinations(new Request("http://localhost/api/destinations?q=park&q=safari")); expect(response.status).toBe(400);
+  });
 });
