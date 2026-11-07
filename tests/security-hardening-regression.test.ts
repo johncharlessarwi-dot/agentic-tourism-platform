@@ -83,4 +83,7 @@ describe("security hardening regression", () => {
   it("denies viewer enquiry creation even with approval", () => {
     expect(authorizeAgentAction({ actorId: "viewer-1", actorRole: "viewer", requestId: "req-viewer", tool: "create_enquiry", approved: true }).allowed).toBe(false);
   });
+  it("denies operator refunds without approval", () => {
+    expect(authorizeAgentAction({ actorId: "operator-1", actorRole: "operator", requestId: "req-refund", tool: "issue_refund" }).allowed).toBe(false);
+  });
 });
