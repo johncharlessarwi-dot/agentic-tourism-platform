@@ -53,4 +53,7 @@ describe("security hardening regression", () => {
   it("rejects null bytes in guest messages", () => {
     expect(enquirySchema.safeParse({ ...validEnquiry, message: "Please book\u0000hidden" }).success).toBe(false);
   });
+  it("allows ordinary multiline guest messages", () => {
+    expect(enquirySchema.safeParse({ ...validEnquiry, message: "Hello\nWe are two travellers" }).success).toBe(true);
+  });
 });
