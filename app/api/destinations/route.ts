@@ -9,6 +9,9 @@ export async function GET(request: Request) {
   const query = (searchParams.get("q") ?? "").trim();
   const category = searchParams.get("category");
   const country = searchParams.get("country");
+  if (["q", "category", "country"].some((key) => searchParams.getAll(key).length > 1)) {
+    return NextResponse.json({ error: "Duplicate destination filters" }, { status: 400 });
+  }
 
   if (query.length > 120 || (category && !categories.has(category as DestinationCategory)) || (country && !countries.has(country as Destination["country"]))) {
     return NextResponse.json({ error: "Invalid destination filters" }, { status: 400 });
