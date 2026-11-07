@@ -101,4 +101,7 @@ describe("security hardening regression", () => {
   it("denies an unknown agent role", () => {
     expect(() => authorizeAgentAction({ actorId: "admin-1", actorRole: "root" as never, requestId: "req-invalid", tool: "issue_refund", approved: true })).toThrow(/Unknown agent role or tool/);
   });
+  it("denies whitespace-only audit actors", () => {
+    expect(authorizeAgentAction({ actorId: "  ", actorRole: "admin", requestId: "req-1", tool: "issue_refund", approved: true }).allowed).toBe(false);
+  });
 });
