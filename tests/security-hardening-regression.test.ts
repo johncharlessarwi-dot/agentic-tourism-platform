@@ -77,4 +77,7 @@ describe("security hardening regression", () => {
   it("searches destinations by country name", () => {
     expect(searchDestinations("Tanzania").some((destination) => destination.slug === "kilimanjaro")).toBe(true);
   });
+  it("rejects control characters in analytics labels", () => {
+    expect(() => aggregateEnquiryMetrics([{ destination: "Safari\nInjected", travellers: 2, status: "new" }])).toThrow(/Invalid enquiry record/);
+  });
 });
