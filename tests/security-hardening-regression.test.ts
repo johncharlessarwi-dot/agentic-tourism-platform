@@ -47,4 +47,7 @@ describe("security hardening regression", () => {
   it("rejects null bytes in destinations", () => {
     expect(enquirySchema.safeParse({ ...validEnquiry, destination: "Serengeti\u0000" }).success).toBe(false);
   });
+  it("rejects line feeds in destinations", () => {
+    expect(enquirySchema.safeParse({ ...validEnquiry, destination: "Kilimanjaro\nInjected" }).success).toBe(false);
+  });
 });
