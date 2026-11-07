@@ -116,4 +116,7 @@ describe("security hardening regression", () => {
   it("rejects duplicate destination query values", async () => {
     const response = await getDestinations(new Request("http://localhost/api/destinations?q=park&q=safari")); expect(response.status).toBe(400);
   });
+  it("rejects duplicate country filters", async () => {
+    const response = await getDestinations(new Request("http://localhost/api/destinations?country=Tanzania&country=Kenya")); expect(response.status).toBe(400);
+  });
 });
