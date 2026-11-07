@@ -29,4 +29,7 @@ describe("security hardening regression", () => {
   it("rejects extra guest fields", () => {
     expect(enquirySchema.safeParse({ ...validEnquiry, isAdmin: true }).success).toBe(false);
   });
+  it("normalizes uppercase guest emails", () => {
+    expect(enquirySchema.parse({ ...validEnquiry, email: "JOHN@EXAMPLE.COM" }).email).toBe("john@example.com");
+  });
 });
