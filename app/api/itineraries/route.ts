@@ -8,7 +8,7 @@ const activitySchema = z.object({
   title: z.string().trim().min(1).max(160),
   startTime: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
   endTime: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
-  location: z.string().trim().max(120).optional(),
+  location: z.string().trim().min(1).max(160).optional(),
 }).strict();
 
 const itinerarySchema = z.object({
