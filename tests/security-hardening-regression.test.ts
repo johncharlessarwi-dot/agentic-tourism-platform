@@ -119,4 +119,7 @@ describe("security hardening regression", () => {
   it("rejects duplicate country filters", async () => {
     const response = await getDestinations(new Request("http://localhost/api/destinations?country=Tanzania&country=Kenya")); expect(response.status).toBe(400);
   });
+  it("rejects unknown destination category filters", async () => {
+    const response = await getDestinations(new Request("http://localhost/api/destinations?category=secret")); expect(response.status).toBe(400);
+  });
 });
