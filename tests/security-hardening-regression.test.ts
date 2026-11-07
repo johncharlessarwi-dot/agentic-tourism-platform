@@ -56,4 +56,7 @@ describe("security hardening regression", () => {
   it("allows ordinary multiline guest messages", () => {
     expect(enquirySchema.safeParse({ ...validEnquiry, message: "Hello\nWe are two travellers" }).success).toBe(true);
   });
+  it("rejects tab control characters in itinerary titles", () => {
+    expect(() => buildItinerary(1, [{ ...itineraryActivity, title: "Drive\tspoof" }])).toThrow(/Invalid activity details/);
+  });
 });
