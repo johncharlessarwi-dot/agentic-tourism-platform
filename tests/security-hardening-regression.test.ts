@@ -92,4 +92,7 @@ describe("security hardening regression", () => {
   it("denies admin refunds without approval", () => {
     expect(authorizeAgentAction({ actorId: "admin-1", actorRole: "admin", requestId: "req-refund", tool: "issue_refund" }).allowed).toBe(false);
   });
+  it("allows approved admin refund action", () => {
+    expect(authorizeAgentAction({ actorId: "admin-1", actorRole: "admin", requestId: "req-refund", tool: "issue_refund", approved: true }).auditEvent.decision).toBe("allowed");
+  });
 });
