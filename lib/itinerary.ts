@@ -25,7 +25,7 @@ export function buildItinerary(dayCount: number, activities: ItineraryActivityIn
     if (!activity || typeof activity.title !== "string" || activity.title.trim().length > 160 ||
         /[\u0000-\u001f\u007f]/.test(activity.title) ||
         typeof activity.startTime !== "string" || typeof activity.endTime !== "string" ||
-        (activity.location !== undefined && (typeof activity.location !== "string" || !activity.location.trim() || activity.location.trim().length > 160))) {
+        (activity.location !== undefined && (typeof activity.location !== "string" || !activity.location.trim() || activity.location.trim().length > 160 || /[\u0000-\u001f\u007f]/.test(activity.location)))) {
       throw new Error("Invalid activity details");
     }
     if (!Number.isInteger(activity.day) || activity.day < 1 || activity.day > dayCount) throw new Error(`Activity day must be between 1 and ${dayCount}`);
