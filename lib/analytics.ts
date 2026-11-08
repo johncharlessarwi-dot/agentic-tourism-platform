@@ -19,7 +19,7 @@ export function aggregateEnquiryMetrics(records: EnquiryMetricInput[]): EnquiryA
   for (const record of records) {
     if (!record || !validStatuses.has(record.status) ||
         !Number.isSafeInteger(record.travellers) || record.travellers < 1 || record.travellers > 100 ||
-        typeof record.destination !== "string" || !record.destination.trim() || record.destination.length > 160 || /[\u0000-\u001f\u007f]/.test(record.destination)) {
+        typeof record.destination !== "string" || !record.destination.trim() || record.destination.length > 160 || /[\u0000-\u001f\u007f\u202a-\u202e\u2066-\u2069]/.test(record.destination)) {
       throw new Error("Invalid enquiry record");
     }
     statusCounts[record.status] += 1;

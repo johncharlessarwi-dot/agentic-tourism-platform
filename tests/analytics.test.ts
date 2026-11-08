@@ -31,3 +31,7 @@ describe("enquiry analytics", () => {
     expect(result.topDestinations).toEqual([]);
   });
 });
+
+it('rejects bidirectional Unicode spoofing in analytics labels',()=>{
+ expect(()=>aggregateEnquiryMetrics([{destination:'Moshi\u202eX',travellers:1,status:'new'}])).toThrow();
+});

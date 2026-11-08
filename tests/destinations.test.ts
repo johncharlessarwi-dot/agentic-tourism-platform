@@ -32,3 +32,26 @@ describe("destination catalog", () => {
     expect(getDestinationBySlug("unknown-place")).toBeUndefined();
   });
 });
+
+it('rejects malformed direct search API calls',()=>{
+ expect(()=>searchDestinations(42 as never)).toThrow(RangeError);
+ expect(()=>searchDestinations('a'.repeat(121))).toThrow(RangeError);
+});
+
+it('keeps catalog immutable across search results',()=>{
+ const first=searchDestinations('Serengeti')[0];
+ first.highlights.push('Tampered');
+ expect(searchDestinations('Serengeti')[0].highlights).not.toContain('Tampered');
+});
+
+it('prevents detail mutation from corrupting global destination catalog',()=>{
+ const first=getDestinationBySlug('serengeti')!;
+ first.highlights.push('Injected');
+ expect(getDestinationBySlug('serengeti')!.highlights).not.toContain('Injected');
+ expect(getDestinationBySlug(5 as never)).toBeUndefined();
+});
+
+it('rejects direct catalog calls with unknown filters',()=>{
+ expect(()=>searchDestinations('','invalid' as never)).toThrow(RangeError);
+ expect(()=>searchDestinations('',undefined,'Atlantis' as never)).toThrow(RangeError);
+});

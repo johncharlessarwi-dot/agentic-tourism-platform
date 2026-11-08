@@ -26,6 +26,6 @@ export async function POST(request: Request) {
     const days = buildItinerary(parsed.data.dayCount, parsed.data.activities);
     return NextResponse.json({ days, summary: summarizeItinerary(days), gaps: summarizeItineraryGaps(days) }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Invalid itinerary" }, { status: 422 });
+    return NextResponse.json({ error: "Invalid itinerary" }, { status: 422, headers: { "Cache-Control": "no-store" } });
   }
 }

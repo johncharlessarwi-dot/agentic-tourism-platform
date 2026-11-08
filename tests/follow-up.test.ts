@@ -11,3 +11,11 @@ describe("manual follow-up suggestions", () => {
     expect(suggestFollowUp({ score: 30, temperature: "cold", reasons: [] }).suggestedAction).toMatch(/guidance/);
   });
 });
+
+it('rejects unsupported lead temperature instead of silently lowering priority',()=>{
+ expect(()=>suggestFollowUp({temperature:'critical' as never,score:90,reasons:[]})).toThrow(RangeError);
+});
+
+it('rejects absent lead object',()=>{
+ expect(()=>suggestFollowUp(null as never)).toThrow(RangeError);
+});

@@ -8,3 +8,13 @@ describe("enquiry lead scoring", () => {
  it("does not reward dates that have already passed", () => { expect(scoreEnquiry({ ...base, travelDate: "2025-12-01" }, new Date("2026-01-01T00:00:00Z")).score).toBe(30); });
  it("caps the score at 100", () => { const result = scoreEnquiry({ ...base, travelDate: "2026-01-10", travellers: 12, message: "x".repeat(200) }, new Date("2026-01-01T00:00:00Z")); expect(result.score).toBeLessThanOrEqual(100); });
 });
+
+it('rejects invalid scoring clocks rather than corrupting priority',()=>{
+ const enquiry={fullName:'Asha',email:'asha@example.com',destination:'Serengeti',travellers:2};
+ expect(()=>scoreEnquiry(enquiry,new Date(NaN))).toThrow(RangeError);
+});
+
+it('rejects unsafe direct lead-scoring counts',()=>{
+ expect(()=>scoreEnquiry({...base,travellers:-1})).toThrow(RangeError);
+ expect(()=>scoreEnquiry({...base,travellers:Infinity})).toThrow(RangeError);
+});

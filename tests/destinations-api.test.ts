@@ -14,3 +14,8 @@ describe("GET /api/destinations", () => {
     expect(response.status).toBe(400);
   });
 });
+
+it('rejects control and directional marks in destination search',async()=>{
+ const response=await GET(new Request('http://localhost/api/destinations?q='+encodeURIComponent('Moshi\u202e')));
+ expect(response.status).toBe(400);
+});

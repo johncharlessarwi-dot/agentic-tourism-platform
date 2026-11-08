@@ -20,14 +20,20 @@ export const destinations: Destination[] = [
 ];
 
 export function searchDestinations(query = "", category?: DestinationCategory, country?: Destination["country"]): Destination[] {
+  if (typeof query !== "string" || query.length > 120 || /[\u0000-\u0008\u000b-\u001f\u007f\u202a-\u202e\u2066-\u2069]/.test(query)) throw new RangeError("Invalid destination query");
+  if (category != null && !["wildlife","mountain","coastal","culture"].includes(category)) throw new RangeError("Invalid destination category");
+  if (country != null && !["Tanzania","Kenya","Uganda","Rwanda"].includes(country)) throw new RangeError("Invalid destination country");
   const term = query.trim().replace(/\s+/g, " ").toLocaleLowerCase();
   return destinations.filter((destination) => {
     const matchesText = !term || [destination.slug.replace(/-/g, " "), destination.slug, destination.name, destination.country, destination.summary, ...destination.highlights].some((value) => value.toLocaleLowerCase().includes(term));
     return matchesText && (!category || destination.category === category) && (!country || destination.country === country);
-  });
+  }).map(destination => ({...destination,highlights:[...destination.highlights]}));
 }
 
 export function getDestinationBySlug(slug: string): Destination | undefined {
+  if (typeof slug !== "string" || slug.length > 100) return undefined;
   const normalizedSlug = slug.trim().toLocaleLowerCase();
-  return destinations.find((destination) => destination.slug === normalizedSlug);
+  if (!/^[a-z0-9-]{1,80}$/.test(normalizedSlug)) return undefined;
+  const found = destinations.find((destination) => destination.slug === normalizedSlug);
+  return found ? {...found, highlights:[...found.highlights]} : undefined;
 }

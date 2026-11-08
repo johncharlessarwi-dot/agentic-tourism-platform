@@ -3,7 +3,9 @@ export class RequestTooLargeError extends Error {
 }
 
 export function isJsonContentType(request: Request): boolean {
-  return /^application\/json(?:\s*;\s*[a-z0-9!#$%&\x27*+.^_`|~-]+\s*=\s*(?:[a-z0-9!#$%&\x27*+.^_`|~-]+|"(?:[^"\\\\]|\\\\.)*")\s*)*$/i.test(request.headers.get("content-type") ?? "");
+  const contentType = request.headers.get("content-type") ?? "";
+  if (contentType.length > 512) return false;
+  return /^application\/json(?:\s*;\s*[a-z0-9!#$%&\x27*+.^_`|~-]+\s*=\s*(?:[a-z0-9!#$%&\x27*+.^_`|~-]+|"(?:[^"\\\\]|\\\\.)*")\s*)*$/i.test(contentType);
 }
 
 /** Read a bounded JSON body without buffering an arbitrarily large request. */
@@ -38,6 +40,7 @@ export async function readLimitedJson(request: Request, maxBytes = 16_384): Prom
     reader.releaseLock();
   }
 
+  if (length !== null && Number(length) !== size) throw new SyntaxError("Content-Length mismatch");
   const bytes = new Uint8Array(size);
   let offset = 0;
   for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.length; }
