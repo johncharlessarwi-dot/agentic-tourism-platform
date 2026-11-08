@@ -36,3 +36,9 @@ describe("POST /api/enquiries", () => {
     expect(response.status).toBe(415);
   });
 });
+
+it('does not reflect potentially private invalid enquiry fields',async()=>{
+ const response=await POST(new Request('http://localhost/api/enquiries',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({fullName:'SECRET_GUEST_NAME',email:'invalid',destination:'Serengeti',travellers:2})}));
+ expect(response.status).toBe(422);
+ expect(JSON.stringify(await response.json())).not.toContain('SECRET_GUEST_NAME');
+});
