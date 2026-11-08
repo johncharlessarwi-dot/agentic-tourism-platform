@@ -37,3 +37,9 @@ it('rejects malformed direct search API calls',()=>{
  expect(()=>searchDestinations(42 as never)).toThrow(RangeError);
  expect(()=>searchDestinations('a'.repeat(121))).toThrow(RangeError);
 });
+
+it('keeps catalog immutable across search results',()=>{
+ const first=searchDestinations('Serengeti')[0];
+ first.highlights.push('Tampered');
+ expect(searchDestinations('Serengeti')[0].highlights).not.toContain('Tampered');
+});
