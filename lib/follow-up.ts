@@ -14,5 +14,6 @@ export function suggestFollowUp(lead: LeadScore): FollowUpSuggestion {
   if (lead.temperature === "warm") {
     return { priority: "normal", suggestedAction: "Clarify travel preferences before preparing a quote", requiresHumanApproval: true };
   }
+  if (lead.temperature !== "cold") throw new RangeError("Invalid lead classification");
   return { priority: "low", suggestedAction: "Ask whether the guest needs destination guidance", requiresHumanApproval: true };
 }
