@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Duplicate destination filters" }, { status: 400 });
   }
 
-  if (query.length > 120 || (category && !categories.has(category as DestinationCategory)) || (country && !countries.has(country as Destination["country"]))) {
+  if (query.length > 120 || /[\u0000-\u001f\u007f\u202a-\u202e\u2066-\u2069]/.test(query) || (category && !categories.has(category as DestinationCategory)) || (country && !countries.has(country as Destination["country"]))) {
     return NextResponse.json({ error: "Invalid destination filters" }, { status: 400 });
   }
 
