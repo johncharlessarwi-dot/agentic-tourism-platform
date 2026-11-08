@@ -37,3 +37,8 @@ describe("bounded JSON request reader", () => {
 it('rejects oversized JSON Content-Type headers',()=>{
  expect(isJsonContentType(new Request('http://localhost',{headers:{'content-type':'application/json;'+'a'.repeat(2000)}}))).toBe(false);
 });
+
+it('rejects mismatched content length in supplied JSON stream',async()=>{
+ const req=new Request('http://localhost',{method:'POST',headers:{'content-length':'1'},body:'{}'});
+ await expect(readLimitedJson(req)).rejects.toThrow('Content-Length mismatch');
+});
