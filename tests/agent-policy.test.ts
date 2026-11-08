@@ -51,3 +51,8 @@ it('rejects bidirectional control marks in audit actor and request IDs',()=>{
  expect(()=>authorizeAgentAction({...base, actorId:'agent\u202eone',tool:'search_destinations'})).toThrow();
  expect(()=>authorizeAgentAction({...base, requestId:'req\u2067spoof',tool:'search_destinations'})).toThrow();
 });
+
+it('rejects invisible LRM and RLM in agent identity',()=>{
+ expect(()=>authorizeAgentAction({...base,actorId:'agent\u200e2',tool:'search_destinations'})).toThrow();
+ expect(()=>authorizeAgentAction({...base,requestId:'req\u200f2',tool:'search_destinations'})).toThrow();
+});
