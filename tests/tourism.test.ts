@@ -23,3 +23,8 @@ it('rejects visual direction spoofing in guest enquiries',()=>{
  expect(enquirySchema.safeParse(input).success).toBe(false);
  expect(enquirySchema.safeParse({...input,fullName:'Asha Mushi',message:'trip\u2066spoof'}).success).toBe(false);
 });
+
+it('rejects malformed destination normalization input',()=>{
+ expect(()=>normalizeDestination(5 as never)).toThrow(RangeError);
+ expect(()=>normalizeDestination('x'.repeat(161))).toThrow(RangeError);
+});
