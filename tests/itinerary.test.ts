@@ -49,3 +49,8 @@ describe("itinerary planner", () => {
     expect(() => buildItinerary(31, [])).toThrow(/between 1 and 30/);
   });
 });
+
+it('does not echo unknown properties from untrusted activity objects',()=>{
+ const days=buildItinerary(1,[{day:1,title:'Safari',startTime:'08:00',endTime:'09:00',isAdmin:true} as never]);
+ expect(days[0].activities[0]).not.toHaveProperty('isAdmin');
+});
