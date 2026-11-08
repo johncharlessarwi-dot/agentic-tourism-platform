@@ -48,6 +48,7 @@ export function buildItinerary(dayCount: number, activities: ItineraryActivityIn
 }
 
 export function summarizeItinerary(days: ItineraryDay[]): ItinerarySummary {
+  if (!Array.isArray(days) || days.length > 30 || days.some(day => !day || !Array.isArray(day.activities) || day.activities.length > 120)) throw new RangeError("Invalid itinerary summary");
   return {
     days: days.length,
     plannedActivities: days.reduce((count, day) => count + day.activities.length, 0),
