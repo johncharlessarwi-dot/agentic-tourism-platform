@@ -15,5 +15,6 @@ export const agentDomains = ["growth-seo", "lead-intelligence", "booking-operati
 export type AgentDomain = (typeof agentDomains)[number];
 
 export function normalizeDestination(destination: string): string {
+  if (typeof destination !== "string" || destination.length > 160) throw new RangeError("Invalid destination name");
   return destination.trim().replace(/\s+/g, " ");
 }
