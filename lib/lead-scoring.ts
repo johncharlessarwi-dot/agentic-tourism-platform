@@ -4,6 +4,7 @@ export type LeadTemperature = "hot" | "warm" | "cold";
 export type LeadScore = { score: number; temperature: LeadTemperature; reasons: string[] };
 
 export function scoreEnquiry(enquiry: TourismEnquiry, now = new Date()): LeadScore {
+  if (!(now instanceof Date) || !Number.isFinite(now.getTime())) throw new RangeError("Invalid scoring date");
   let score = 30;
   const reasons = ["Complete enquiry passed validation"];
 
