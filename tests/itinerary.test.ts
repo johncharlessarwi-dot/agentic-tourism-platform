@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildItinerary, summarizeItineraryGaps } from "../lib/itinerary";
+import { buildItinerary, summarizeItinerary, summarizeItineraryGaps } from "../lib/itinerary";
 
 describe("itinerary planner", () => {
   it("creates all requested days and sorts activities by start time", () => {
@@ -53,4 +53,9 @@ describe("itinerary planner", () => {
 it('does not echo unknown properties from untrusted activity objects',()=>{
  const days=buildItinerary(1,[{day:1,title:'Safari',startTime:'08:00',endTime:'09:00',isAdmin:true} as never]);
  expect(days[0].activities[0]).not.toHaveProperty('isAdmin');
+});
+
+it('rejects malformed or oversized itinerary summaries',()=>{
+ expect(()=>summarizeItinerary(null as never)).toThrow(RangeError);
+ expect(()=>summarizeItinerary(Array(31).fill({day:1,activities:[]}))).toThrow(RangeError);
 });
