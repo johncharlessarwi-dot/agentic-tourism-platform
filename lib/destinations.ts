@@ -29,8 +29,9 @@ export function searchDestinations(query = "", category?: DestinationCategory, c
 }
 
 export function getDestinationBySlug(slug: string): Destination | undefined {
-  if (typeof slug !== "string" || slug.length > 80 || !/^[a-z0-9-]+$/i.test(slug)) return undefined;
+  if (typeof slug !== "string" || slug.length > 100) return undefined;
   const normalizedSlug = slug.trim().toLocaleLowerCase();
+  if (!/^[a-z0-9-]{1,80}$/.test(normalizedSlug)) return undefined;
   const found = destinations.find((destination) => destination.slug === normalizedSlug);
   return found ? {...found, highlights:[...found.highlights]} : undefined;
 }
