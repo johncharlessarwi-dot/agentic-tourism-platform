@@ -21,8 +21,8 @@ export const destinations: Destination[] = [
 
 export function searchDestinations(query = "", category?: DestinationCategory, country?: Destination["country"]): Destination[] {
   if (typeof query !== "string" || query.length > 120 || /[\u0000-\u0008\u000b-\u001f\u007f\u202a-\u202e\u2066-\u2069]/.test(query)) throw new RangeError("Invalid destination query");
-  if (category !== undefined && !["wildlife","mountain","coastal","culture"].includes(category)) throw new RangeError("Invalid destination category");
-  if (country !== undefined && !["Tanzania","Kenya","Uganda","Rwanda"].includes(country)) throw new RangeError("Invalid destination country");
+  if (category != null && !["wildlife","mountain","coastal","culture"].includes(category)) throw new RangeError("Invalid destination category");
+  if (country != null && !["Tanzania","Kenya","Uganda","Rwanda"].includes(country)) throw new RangeError("Invalid destination country");
   const term = query.trim().replace(/\s+/g, " ").toLocaleLowerCase();
   return destinations.filter((destination) => {
     const matchesText = !term || [destination.slug.replace(/-/g, " "), destination.slug, destination.name, destination.country, destination.summary, ...destination.highlights].some((value) => value.toLocaleLowerCase().includes(term));
