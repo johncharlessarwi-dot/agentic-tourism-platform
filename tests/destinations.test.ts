@@ -32,3 +32,8 @@ describe("destination catalog", () => {
     expect(getDestinationBySlug("unknown-place")).toBeUndefined();
   });
 });
+
+it('rejects malformed direct search API calls',()=>{
+ expect(()=>searchDestinations(42 as never)).toThrow(RangeError);
+ expect(()=>searchDestinations('a'.repeat(121))).toThrow(RangeError);
+});
