@@ -50,3 +50,8 @@ it('prevents detail mutation from corrupting global destination catalog',()=>{
  expect(getDestinationBySlug('serengeti')!.highlights).not.toContain('Injected');
  expect(getDestinationBySlug(5 as never)).toBeUndefined();
 });
+
+it('rejects direct catalog calls with unknown filters',()=>{
+ expect(()=>searchDestinations('','invalid' as never)).toThrow(RangeError);
+ expect(()=>searchDestinations('',undefined,'Atlantis' as never)).toThrow(RangeError);
+});
