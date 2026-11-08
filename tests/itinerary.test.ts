@@ -59,3 +59,7 @@ it('rejects malformed or oversized itinerary summaries',()=>{
  expect(()=>summarizeItinerary(null as never)).toThrow(RangeError);
  expect(()=>summarizeItinerary(Array(31).fill({day:1,activities:[]}))).toThrow(RangeError);
 });
+
+it('rejects malformed gap-analysis input',()=>{
+ expect(()=>summarizeItineraryGaps([{day:1,activities:null}] as never)).toThrow(RangeError);
+});
