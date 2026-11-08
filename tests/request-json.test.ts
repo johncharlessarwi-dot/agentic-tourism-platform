@@ -33,3 +33,7 @@ describe("bounded JSON request reader", () => {
     await expect(readLimitedJson(request)).rejects.toBeInstanceOf(RequestTooLargeError);
   });
 });
+
+it('rejects oversized JSON Content-Type headers',()=>{
+ expect(isJsonContentType(new Request('http://localhost',{headers:{'content-type':'application/json;'+'a'.repeat(2000)}}))).toBe(false);
+});
