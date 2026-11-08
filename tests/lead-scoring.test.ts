@@ -13,3 +13,8 @@ it('rejects invalid scoring clocks rather than corrupting priority',()=>{
  const enquiry={fullName:'Asha',email:'asha@example.com',destination:'Serengeti',travellers:2};
  expect(()=>scoreEnquiry(enquiry,new Date(NaN))).toThrow(RangeError);
 });
+
+it('rejects unsafe direct lead-scoring counts',()=>{
+ expect(()=>scoreEnquiry({...base,travellers:-1})).toThrow(RangeError);
+ expect(()=>scoreEnquiry({...base,travellers:Infinity})).toThrow(RangeError);
+});
