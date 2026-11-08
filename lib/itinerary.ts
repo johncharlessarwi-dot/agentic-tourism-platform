@@ -59,6 +59,7 @@ export function summarizeItinerary(days: ItineraryDay[]): ItinerarySummary {
 
 /** Advisory free-time calculation; excludes overnight time and does not book transfers. */
 export function summarizeItineraryGaps(days: ItineraryDay[]): { freeMinutesBetweenActivities: number; gaps: number } {
+  if (!Array.isArray(days) || days.length > 30 || days.some(day => !day || !Array.isArray(day.activities) || day.activities.length > 120)) throw new RangeError("Invalid itinerary gaps");
   let freeMinutesBetweenActivities = 0;
   let gaps = 0;
   for (const day of days) {
