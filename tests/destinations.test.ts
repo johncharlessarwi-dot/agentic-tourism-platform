@@ -43,3 +43,10 @@ it('keeps catalog immutable across search results',()=>{
  first.highlights.push('Tampered');
  expect(searchDestinations('Serengeti')[0].highlights).not.toContain('Tampered');
 });
+
+it('prevents detail mutation from corrupting global destination catalog',()=>{
+ const first=getDestinationBySlug('serengeti')!;
+ first.highlights.push('Injected');
+ expect(getDestinationBySlug('serengeti')!.highlights).not.toContain('Injected');
+ expect(getDestinationBySlug(5 as never)).toBeUndefined();
+});
