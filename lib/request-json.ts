@@ -40,6 +40,7 @@ export async function readLimitedJson(request: Request, maxBytes = 16_384): Prom
     reader.releaseLock();
   }
 
+  if (length !== null && Number(length) !== size) throw new SyntaxError("Content-Length mismatch");
   const bytes = new Uint8Array(size);
   let offset = 0;
   for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.length; }
