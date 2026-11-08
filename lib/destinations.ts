@@ -25,7 +25,7 @@ export function searchDestinations(query = "", category?: DestinationCategory, c
   return destinations.filter((destination) => {
     const matchesText = !term || [destination.slug.replace(/-/g, " "), destination.slug, destination.name, destination.country, destination.summary, ...destination.highlights].some((value) => value.toLocaleLowerCase().includes(term));
     return matchesText && (!category || destination.category === category) && (!country || destination.country === country);
-  });
+  }).map(destination => ({...destination,highlights:[...destination.highlights]}));
 }
 
 export function getDestinationBySlug(slug: string): Destination | undefined {
