@@ -5,6 +5,7 @@ export type LeadScore = { score: number; temperature: LeadTemperature; reasons: 
 
 export function scoreEnquiry(enquiry: TourismEnquiry, now = new Date()): LeadScore {
   if (!(now instanceof Date) || !Number.isFinite(now.getTime())) throw new RangeError("Invalid scoring date");
+  if (!enquiry || !Number.isSafeInteger(enquiry.travellers) || enquiry.travellers < 1 || enquiry.travellers > 100) throw new RangeError("Invalid traveller count");
   let score = 30;
   const reasons = ["Complete enquiry passed validation"];
 
