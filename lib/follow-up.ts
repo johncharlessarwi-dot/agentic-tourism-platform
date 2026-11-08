@@ -8,6 +8,7 @@ export type FollowUpSuggestion = {
 
 /** A recommendation only: this module never sends messages or books a trip. */
 export function suggestFollowUp(lead: LeadScore): FollowUpSuggestion {
+  if (!lead || typeof lead !== "object") throw new RangeError("Invalid lead");
   if (lead.temperature === "hot") {
     return { priority: "high", suggestedAction: "Review availability and prepare a personal response", requiresHumanApproval: true };
   }
