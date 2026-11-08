@@ -46,3 +46,8 @@ describe("agent action policy", () => {
     expect(result.auditEvent.decision).toBe("denied");
   });
 });
+
+it('rejects bidirectional control marks in audit actor and request IDs',()=>{
+ expect(()=>authorizeAgentAction({...base, actorId:'agent\u202eone',tool:'search_destinations'})).toThrow();
+ expect(()=>authorizeAgentAction({...base, requestId:'req\u2067spoof',tool:'search_destinations'})).toThrow();
+});
