@@ -1,13 +1,15 @@
 import type { MetadataRoute } from "next";
 
+import { siteOrigin } from "../lib/site-origin";
+
 export default function robots(): MetadataRoute.Robots {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  const siteUrl = siteOrigin();
   return {
     rules: {
       userAgent: "*",
       allow: "/",
       disallow: ["/api/"]
     },
-    ...(siteUrl ? { sitemap: `${siteUrl.replace(/\/$/, "")}/sitemap.xml` } : {})
+    ...(siteUrl ? { sitemap: `${siteUrl}/sitemap.xml` } : {})
   };
 }
