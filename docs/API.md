@@ -70,5 +70,6 @@ The score and reasons vary by group size, travel date, and message detail. **Val
 | `413` | POST body exceeds 16 KB |
 | `415` | POST content type is not `application/json` |
 | `422` | Enquiry or itinerary fails validation |
+| `500` | The service could not process the request |
 
-POST responses are marked `Cache-Control: no-store` for validated data. Do not log request bodies or guest identifiers in production. Add authentication, rate limits, observability, data protection and human verification before building an operator inbox or sending quotes.
+The POST routes mark success and error responses `Cache-Control: no-store`. Validation failures return a generic error rather than reflecting submitted fields. Unexpected processing failures emit a fixed log event without request bodies, guest identifiers, or exception details. Add authentication, rate limits, observability, data protection and human verification before building an operator inbox or sending quotes.

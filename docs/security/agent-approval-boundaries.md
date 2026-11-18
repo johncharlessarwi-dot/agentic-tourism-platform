@@ -2,6 +2,10 @@
 
 SafariOS agents may prepare recommendations and draft operational changes, but actions with external, financial, privacy, or booking consequences require explicit human approval.
 
+## Current implementation
+
+The public prototype endpoints only validate or calculate data; they do not invoke agent tools. `lib/agent-policy.ts` is a policy helper, not an authentication or approval-verification mechanism. When wiring a tool executor, derive actor, role, and tenant from a verified server-side session and the target resource. Derive approval from a server-side record bound to the actor, tenant, tool, resource, and action parameters; never trust those fields or an `approved` flag supplied by the client or model. Reject expired or replayed approval and recheck the resource scope before execution.
+
 ## Approval-required actions
 
 - Confirming or changing a booking or availability commitment.
