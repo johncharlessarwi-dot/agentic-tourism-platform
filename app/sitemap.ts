@@ -1,17 +1,11 @@
 import type { MetadataRoute } from "next";
 import { destinations } from "../lib/destinations";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL;
-  if (!configuredUrl) return [];
+import { siteOrigin } from "../lib/site-origin";
 
-  let baseUrl: URL;
-  try {
-    baseUrl = new URL(configuredUrl);
-    if (!(["https:", "http:"].includes(baseUrl.protocol))) return [];
-  } catch {
-    return [];
-  }
+export default function sitemap(): MetadataRoute.Sitemap {
+  const baseUrl = siteOrigin();
+  if (!baseUrl) return [];
 
   const paths = ["/", "/destinations", ...destinations.map((destination) => `/destinations/${destination.slug}`)];
   return paths.map((path) => ({
