@@ -28,6 +28,15 @@ describe("bounded JSON request reader", () => {
     await expect(readLimitedJson(request)).rejects.toBeInstanceOf(RequestTooLargeError);
     expect(request.body?.locked).toBe(false);
   });
+  it("preserves the size-limit error when upstream cancellation fails", async () => {
+    const body = new ReadableStream<Uint8Array>({
+      start(controller) { controller.enqueue(new Uint8Array(4)); },
+      cancel() { return Promise.reject(new Error("Stream could not be canceled")); },
+    });
+    const request = new Request("http://localhost", { method: "POST", body, duplex: "half" } as RequestInit & { duplex: "half" });
+    await expect(readLimitedJson(request, 3)).rejects.toBeInstanceOf(RequestTooLargeError);
+    expect(body.locked).toBe(false);
+  });
   it("rejects an announced oversized body before reading it", async () => {
     const request = new Request("http://localhost", { method: "POST", headers: { "content-length": "30000" }, body: "{}" });
     await expect(readLimitedJson(request)).rejects.toBeInstanceOf(RequestTooLargeError);
