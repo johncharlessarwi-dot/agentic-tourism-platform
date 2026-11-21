@@ -16,9 +16,11 @@ function toMinutes(value: string): number | null {
   return hours * 60 + minutes;
 }
 
+export class ItineraryValidationError extends Error {}
+
 export function buildItinerary(dayCount: number, activities: ItineraryActivityInput[]): ItineraryDay[] {
-  if (!Number.isInteger(dayCount) || dayCount < 1 || dayCount > 30) throw new Error("Trip length must be between 1 and 30 days");
-  if (!Array.isArray(activities) || activities.length > 300) throw new Error("Trip activities must be limited to 300");
+  if (!Number.isInteger(dayCount) || dayCount < 1 || dayCount > 30) throw new ItineraryValidationError("Trip length must be between 1 and 30 days");
+  if (!Array.isArray(activities) || activities.length > 300) throw new ItineraryValidationError("Trip activities must be limited to 300");
   const days: ItineraryDay[] = Array.from({ length: dayCount }, (_, index) => ({ day: index + 1, activities: [] }));
 
   for (const activity of activities) {
@@ -26,13 +28,13 @@ export function buildItinerary(dayCount: number, activities: ItineraryActivityIn
         /[\u0000-\u001f\u007f]/.test(activity.title) ||
         typeof activity.startTime !== "string" || typeof activity.endTime !== "string" ||
         (activity.location !== undefined && (typeof activity.location !== "string" || !activity.location.trim() || activity.location.trim().length > 160 || /[\u0000-\u001f\u007f]/.test(activity.location)))) {
-      throw new Error("Invalid activity details");
+      throw new ItineraryValidationError("Invalid activity details");
     }
-    if (!Number.isInteger(activity.day) || activity.day < 1 || activity.day > dayCount) throw new Error(`Activity day must be between 1 and ${dayCount}`);
-    if (!activity.title.trim()) throw new Error("Activity title is required");
+    if (!Number.isInteger(activity.day) || activity.day < 1 || activity.day > dayCount) throw new ItineraryValidationError(`Activity day must be between 1 and ${dayCount}`);
+    if (!activity.title.trim()) throw new ItineraryValidationError("Activity title is required");
     const start = toMinutes(activity.startTime);
     const end = toMinutes(activity.endTime);
-    if (start === null || end === null || end <= start) throw new Error("Activity times must be valid and end after they start");
+    if (start === null || end === null || end <= start) throw new ItineraryValidationError("Activity times must be valid and end after they start");
     days[activity.day - 1].activities.push({ day: activity.day, title: activity.title.trim(), startTime: activity.startTime, endTime: activity.endTime, location: activity.location?.trim(), durationMinutes: end - start });
   }
 
@@ -41,7 +43,7 @@ export function buildItinerary(dayCount: number, activities: ItineraryActivityIn
     for (let index = 1; index < day.activities.length; index += 1) {
       const previousEnd = toMinutes(day.activities[index - 1].endTime)!;
       const currentStart = toMinutes(day.activities[index].startTime)!;
-      if (currentStart < previousEnd) throw new Error(`Activities overlap on day ${day.day}`);
+      if (currentStart < previousEnd) throw new ItineraryValidationError(`Activities overlap on day ${day.day}`);
     }
   }
   return days;

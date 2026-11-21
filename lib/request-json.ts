@@ -31,7 +31,8 @@ export async function readLimitedJson(request: Request, maxBytes = 16_384): Prom
       if (done) break;
       size += value.byteLength;
       if (size > maxBytes) {
-        await reader.cancel();
+        // Upstream cancellation must not delay or replace the size-limit error.
+        void reader.cancel().catch(() => {});
         throw new RequestTooLargeError();
       }
       chunks.push(value);

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { buildItinerary, summarizeItinerary, summarizeItineraryGaps } from "../../../lib/itinerary";
+import { buildItinerary, ItineraryValidationError, summarizeItinerary, summarizeItineraryGaps } from "../../../lib/itinerary";
 import { isJsonContentType, readLimitedJson, RequestTooLargeError } from "../../../lib/request-json";
 
 const activitySchema = z.object({
@@ -16,16 +16,25 @@ const itinerarySchema = z.object({
   activities: z.array(activitySchema).max(120),
 }).strict();
 
+const headers = { "Cache-Control": "no-store" };
+
 export async function POST(request: Request) {
-  if (!isJsonContentType(request)) return NextResponse.json({ error: "Content-Type must be application/json" }, { status: 415 });
+  if (!isJsonContentType(request)) return NextResponse.json({ error: "Content-Type must be application/json" }, { status: 415, headers });
   let payload: unknown;
-  try { payload = await readLimitedJson(request); } catch (error) { return NextResponse.json({ error: error instanceof RequestTooLargeError ? "Request body is too large" : "Request body must be valid JSON" }, { status: error instanceof RequestTooLargeError ? 413 : 400 }); }
-  const parsed = itinerarySchema.safeParse(payload);
-  if (!parsed.success) return NextResponse.json({ error: "Invalid itinerary", issues: parsed.error.issues }, { status: 422 });
   try {
-    const days = buildItinerary(parsed.data.dayCount, parsed.data.activities);
-    return NextResponse.json({ days, summary: summarizeItinerary(days), gaps: summarizeItineraryGaps(days) }, { headers: { "Cache-Control": "no-store" } });
+    payload = await readLimitedJson(request);
   } catch (error) {
-    return NextResponse.json({ error: "Invalid itinerary" }, { status: 422, headers: { "Cache-Control": "no-store" } });
+    if (error instanceof RequestTooLargeError) return NextResponse.json({ error: "Request body is too large" }, { status: 413, headers });
+    return NextResponse.json({ error: "Request body must be valid JSON" }, { status: 400, headers });
+  }
+  try {
+    const parsed = itinerarySchema.safeParse(payload);
+    if (!parsed.success) return NextResponse.json({ error: "Invalid itinerary" }, { status: 422, headers });
+    const days = buildItinerary(parsed.data.dayCount, parsed.data.activities);
+    return NextResponse.json({ days, summary: summarizeItinerary(days), gaps: summarizeItineraryGaps(days) }, { headers });
+  } catch (error) {
+    if (error instanceof ItineraryValidationError) return NextResponse.json({ error: "Invalid itinerary" }, { status: 422, headers });
+    console.error("itinerary_processing_failed");
+    return NextResponse.json({ error: "Could not process itinerary" }, { status: 500, headers });
   }
 }
