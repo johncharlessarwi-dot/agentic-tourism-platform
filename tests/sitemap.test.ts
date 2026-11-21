@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import robots from "../app/robots";
 import sitemap from "../app/sitemap";
 import { destinations } from "../lib/destinations";
 
@@ -16,4 +17,19 @@ describe("public sitemap", () => {
     vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
     expect(sitemap()).toEqual([]);
   });
+});
+
+it.each(["invalid", "file:///tmp/site", "https://example-user@example.org/"])(
+  "omits an invalid public origin from both metadata routes",
+  (value) => {
+    vi.stubEnv("NEXT_PUBLIC_SITE_URL", value);
+    expect(robots().sitemap).toBeUndefined();
+    expect(sitemap()).toEqual([]);
+  },
+);
+
+it("publishes the same origin when the configured URL has a path and query", () => {
+  vi.stubEnv("NEXT_PUBLIC_SITE_URL", "https://example.org/setup?lang=sw");
+  expect(robots().sitemap).toBe("https://example.org/sitemap.xml");
+  expect(sitemap()[0].url).toBe("https://example.org/");
 });
