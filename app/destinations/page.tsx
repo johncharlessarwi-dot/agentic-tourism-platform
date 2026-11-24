@@ -31,9 +31,9 @@ export default async function DestinationsPage({ searchParams }: { searchParams:
       <div className="destination-grid">{matches.map((place) => <article className="cap-card" key={place.slug}>
         <div className="card-top"><span>{place.country}</span><span className="status">{place.category}</span></div>
         <h2>{place.name}</h2><p>{place.summary}</p><p className="highlights">{place.highlights.join(" · ")}</p>
-        <Link className="nav-link" href={`/destinations/${place.slug}`}>Explore destination ↗</Link>
+        <Link className="nav-link" href={`/destinations/${place.slug}`} aria-label={`Explore ${place.name}`}>Explore destination ↗</Link>
       </article>)}</div>
-      {matches.length === 0 && <p className="intro">No matches yet. Try another destination or country.</p>}
+      {matches.length === 0 && <p className="intro">No matching destinations. <Link className="nav-link" href="/destinations">Clear filters and browse all destinations</Link></p>}
     </section>
   </main>;
 }
